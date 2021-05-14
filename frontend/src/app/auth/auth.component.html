@@ -1,0 +1,12 @@
+<h3>Please enter credentials</h3>
+<form [formGroup]="inputForm">
+    <div class="form-group"><label i18n="userName">Username: </label>
+        <input class="form-control" type="text" formControlName="appUser"></div>
+    <div class="form-group"><label i18n="password">Passwort: </label>
+        <input class="form-control" type="password" formControlName="password"></div>
+    <div class="action">
+        <button i18n="submit" class="btn btn-primary" type="submit" (click)="submitLoginData(inputForm.value)">
+            Absenden
+        </button>
+    </div>
+</form>

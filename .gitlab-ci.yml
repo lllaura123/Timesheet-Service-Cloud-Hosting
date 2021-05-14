@@ -1,0 +1,7 @@
+variables:
+  DOCKER_IMAGE_NAME: exxeta/haukea/timesheet-approve
+
+include:
+  - project: 'exxeta.platform.suite/cicd-services/cicd-templates'
+    ref: v1
+    file: 'gitlab-ci/scs_gitlab-ci.yml'
