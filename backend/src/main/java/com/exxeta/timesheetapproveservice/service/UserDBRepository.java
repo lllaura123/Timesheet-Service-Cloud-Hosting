@@ -1,15 +1,13 @@
 package com.exxeta.timesheetapproveservice.service;
 
-import com.exxeta.timesheetapproveservice.domain.Student;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
-import java.util.Optional;
 
 @Repository
-@Profile({"cloud", "local"})
+@Profile({"cloud", "local", "default"})
 public class UserDBRepository {
     @Value("${db.url}")
     private String dbUrl;
@@ -18,9 +16,10 @@ public class UserDBRepository {
     @Value("${db.password}")
     private String dbPassword;
 
-    public void addUser(String userName, String password, boolean isStudent){
+    public void addUser(String userName, String password, boolean isStudent) {
         executeSqlUpdate("CREATE TABLE IF NOT EXISTS users (userName varchar(255) NOT NULL, password varchar(255) NOT NULL, isStudent BOOLEAN NOT NULL, PRIMARY KEY (userName))");
-        executeSqlUpdate("INSERT INTO users(userName,password, isStudent) VALUES('" + userName + "','" + password + "','" + isStudent + "')");
+        executeSqlUpdate("INSERT INTO users(userName,password, isStudent) VALUES('" + userName + "','" + password + "','" + isStudent + "') ON CONFLICT(userName) DO UPDATE " +
+                "SET password=EXCLUDED.password, isStudent=EXCLUDED.isStudent;");
     }
 
     public void deleteUser(String username){

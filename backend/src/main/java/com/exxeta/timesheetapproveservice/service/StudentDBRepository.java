@@ -24,6 +24,7 @@ public class StudentDBRepository implements StudentRepository {
 
     @Override
     public Optional<Student> getStudentWithUserName(String userName) {
+        executeSqlUpdate("CREATE TABLE IF NOT EXISTS students (userName varchar(255) NOT NULL, firstName varchar(255), lastName varchar(255), PRIMARY KEY (userName))");
         try (Connection con = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)
         ) {
             Statement stmt = con.createStatement();
@@ -40,8 +41,10 @@ public class StudentDBRepository implements StudentRepository {
 
     @Override
     public void addStudent(String firstName, String lastName, String userName) {
+        executeSqlUpdate("CREATE TABLE IF NOT EXISTS students (userName varchar(255) NOT NULL, firstName varchar(255), lastName varchar(255), PRIMARY KEY (userName))");
         executeSqlUpdate("INSERT INTO students(userName,firstName,lastName) VALUES('" + userName + "','" + firstName + "','" + lastName + "') " +
-                "ON CONFLICT(userName) DO NOTHING");
+                "ON CONFLICT(userName) DO UPDATE " +
+                "SET firstName= EXCLUDED.userName, lastName=EXCLUDED.lastName;");
     }
 
     @Override
@@ -51,6 +54,7 @@ public class StudentDBRepository implements StudentRepository {
 
     @Override
     public List<Student> getAllStudents() {
+        executeSqlUpdate("CREATE TABLE IF NOT EXISTS students (userName varchar(255) NOT NULL, firstName varchar(255), lastName varchar(255), PRIMARY KEY (userName))");
         List<Student> studentList = new ArrayList<>();
         try (Connection con = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
              Statement stmt = con.createStatement();

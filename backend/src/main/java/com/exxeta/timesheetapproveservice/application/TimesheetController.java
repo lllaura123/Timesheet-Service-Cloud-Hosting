@@ -1,7 +1,7 @@
 package com.exxeta.timesheetapproveservice.application;
 
-import com.exxeta.timesheetapproveservice.domain.Language;
 import com.exxeta.timesheetapproveservice.domain.JiraLoginData;
+import com.exxeta.timesheetapproveservice.domain.Language;
 import com.exxeta.timesheetapproveservice.domain.Student;
 import com.exxeta.timesheetapproveservice.domain.Timesheet;
 import com.exxeta.timesheetapproveservice.service.*;
@@ -57,8 +57,11 @@ public class TimesheetController {
     @GetMapping("/user/{appUser}/{year}/{month}")
     public List<Timesheet> getTimesheetList(@PathVariable String appUser, @PathVariable int year, @PathVariable int month) {
         List<Student> students = new ArrayList<>();
-        if(userDBRepository.userIsStudent(appUser)){
-            students.add(studentRepository.getStudentWithUserName(appUser).get());
+        if(userDBRepository.userIsStudent(appUser)) {
+            Optional<Student> student = studentRepository.getStudentWithUserName(appUser);
+            if (student.isPresent()) {
+                students.add(student.get());
+            }
         } else {
             students = studentRepository.getAllStudents();
         }
